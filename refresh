@@ -1,0 +1,94 @@
+#-*- coding: utf-8 -*-
+
+# 2023-2024 Programação 1 (LTI)
+# Grupo 177
+# 62224 André Alexandre 
+# 62814 Sofian Fathallah
+
+
+
+
+#Dependencies
+import infoFromFiles
+import infoToFiles
+import planning
+import sys
+
+
+
+
+#Function that runs the birthPlan application
+def plan(doctorsFileName, scheduleFileName, requestsFileName):
+    """
+    Runs the birthPlan application.
+
+    Requires:
+    doctorsFileName is a str with the name of a .txt file containing a list
+    of doctors at date d and time t, organized as in the examples provided;
+    scheduleFileName is a str with the name of a .txt file containing a list
+    of birth assistances assigned to doctors at date d and time t, as in the examples provided;
+    requestsFileName is a str with the name of a .txt file containing a list
+    of cruises requested at date d and time t+30mins;
+    Ensures:
+    writing of two .txt files containing the updated list of doctors assigned
+    to mothers and the updated list of birth assistances, according to 
+    the requirements in the general specifications provided (omitted here for 
+    the sake of readability);
+    these two output files are named, respectively, doctorsXXhYY.txt and
+    scheduleXXhYY.txt, where XXhYY represents the time 30 minutes
+    after the time t indicated in the files doctorsFileName,
+    scheduleFileName and requestsFileName, and are written in the same directory
+    of the latter.
+    """
+    
+    #Verification
+    try:
+        for i in range(1,4,1):
+            fileType = infoFromFiles.informationsHeader(sys.argv[i])
+            if i==1:
+                assert fileType[6]== "Doctors:"
+            if i==2:
+                assert fileType[6]== "Schedule:"
+            if i==3:
+                assert fileType[6]== "Mothers:"
+
+
+
+
+        # Importing New Files Parts
+        #Time
+        newTime=infoFromFiles.informationsHeader(requestsFileName)[3]
+
+        #Doctors and Schedule Headers
+        scheduleHeader = infoFromFiles.informationsHeader(scheduleFileName)
+        doctorsHeader = infoFromFiles.informationsHeader(doctorsFileName)
+
+        #Lists of Doctors and Schedule
+        schedule, doctors = planning.updateSchedule(doctorsFileName, requestsFileName, scheduleFileName, newTime)
+
+
+
+
+        #Creating Doctors and Schedule New Files
+        infoToFiles.writeScheduleFile(schedule, scheduleHeader, scheduleFileName)
+        infoToFiles.writeDoctorsFile(doctors, doctorsHeader, doctorsFileName)
+
+
+
+    
+    except AssertionError: 
+            print("File head error: scope inconsistency between name and header in file.")
+
+
+
+
+#Execute
+plan(sys.argv[1], sys.argv[2], sys.argv[3])
+
+
+    
+    
+
+
+        
+
